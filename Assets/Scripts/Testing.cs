@@ -7,13 +7,14 @@ using System;
 using TMPro;
 using Unity.Services.CloudCode;
 using System.Threading.Tasks;
+using UnityEngine.Networking;
+using Unity.VisualScripting;
 
 public class Testing : MonoBehaviour
 {
     private const int maxInitializeTries = 5;
     private const float timeUntilRetry = 5f;
     private bool initialized = false;
-    private bool signedIn = false;
 
     [Header("Login elements")]
     [SerializeField] private GameObject loginScreen;
@@ -30,11 +31,21 @@ public class Testing : MonoBehaviour
     [SerializeField] private GameObject usernameSymbolWarning;
     [SerializeField] private GameObject passwordLengthWarning;
     [SerializeField] private GameObject passwordSymbolWarning;
+    [SerializeField] private GameObject miscRegWarningObj;
+    [SerializeField] private TextMeshProUGUI miscRegWarningText;
+    [SerializeField] private GameObject miscLogWarningObj;
+    [SerializeField] private TextMeshProUGUI miscLogWarningText;
     [SerializeField] private GameObject registerSuccessfulPopup;
 
     private void Awake()
     {
         StartCore();
+    }
+
+    private void Start()
+    {
+        loginScreen.SetActive(true);
+        registerScreen.SetActive(false);
     }
 
     public async void StartCore()
@@ -54,6 +65,8 @@ public class Testing : MonoBehaviour
                 await Task.Delay(TimeSpan.FromSeconds(timeUntilRetry));
             }
         }
+
+        if (AuthenticationService.Instance.IsSignedIn)
         AuthenticationService.Instance.SignOut();
     }
 
@@ -71,6 +84,9 @@ public class Testing : MonoBehaviour
         catch (AuthenticationException ae)
         {
             Debug.LogException(ae);
+            miscRegWarningObj.SetActive(true);
+            miscRegWarningText.text = ae.Message;
+            miscRegWarningText.text = string.Concat(miscRegWarningText.text.FirstCharacterToUpper(), ".");
         }
         catch (RequestFailedException rfe)
         {
@@ -81,7 +97,6 @@ public class Testing : MonoBehaviour
     public async void UserSignIn()
     {
         if (!initialized) return;
-        // if (!SignUpFieldsValid()) return;
 
         try
         {
@@ -92,6 +107,9 @@ public class Testing : MonoBehaviour
         catch (AuthenticationException ae)
         {
             Debug.LogException(ae);
+            miscLogWarningObj.SetActive(true);
+            miscLogWarningText.text = ae.Message;
+            miscLogWarningText.text = string.Concat(miscLogWarningText.text.FirstCharacterToUpper(), ".");
         }
         catch (RequestFailedException rfe)
         {
@@ -99,27 +117,9 @@ public class Testing : MonoBehaviour
         }
     }
 
-    public async void SignInAnon()
-    {
-        if (!initialized) return;
-
-        try
-        {
-            await AuthenticationService.Instance.SignInAnonymouslyAsync();
-            saveTestButton.SetActive(true);
-            saveTimeTestButton.SetActive(true);
-            serverTimeButton.SetActive(true);
-            signedIn = true;
-        }
-        catch (Exception e)
-        {
-            Debug.Log($"Failed to sign in:\n{e}");
-        }
-    }
-
     public async void SaveHelloWorld()
     {
-        if (!signedIn) return;
+        if (!AuthenticationService.Instance.IsSignedIn) return;
 
         var data = new Dictionary<string, object> { { "MySaveKey", "Hello World" } };
         await CloudSaveService.Instance.Data.Player.SaveAsync(data);
@@ -127,7 +127,7 @@ public class Testing : MonoBehaviour
 
     public async void SaveTimes()
     {
-        if (!signedIn) return;
+        if (!AuthenticationService.Instance.IsSignedIn) return;
         CloudCodeTimeResponse response = null;
 
         try
@@ -151,6 +151,7 @@ public class Testing : MonoBehaviour
         {
             await CloudSaveService.Instance.Data.Player.SaveAsync(startTime);
             await CloudSaveService.Instance.Data.Player.SaveAsync(endTime);
+            Debug.Log($"Time save successful");
         }
         catch (Exception e)
         {
