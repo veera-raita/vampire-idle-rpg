@@ -175,8 +175,7 @@ public class Testing : MonoBehaviour
 
         if (response != null)
         {
-            Duration duration = new(0, 7, 30);
-            TimeSpan timeSpan = new(duration.days, duration.hours, duration.minutes, 0);
+            TimeSpan timeSpan = new(0, 7, 30, 0);
             DateTime dt = DateTime.Parse(response.formattedDate);
             serverTimeText.text = string.Concat("Current Server time is:\n", dt,
             "\n", "Completed at: ", dt + timeSpan);
@@ -185,35 +184,33 @@ public class Testing : MonoBehaviour
 
     private bool SignUpFieldsValid()
     {
-        bool usernameValid = false;
-        bool passwordValid = false;
+        bool usernameValid = true;
+        bool passwordValid = true;
+
         if (signUpUsernameField.text.Length < 3 || signUpUsernameField.text.Length > 20)
         {
             usernameLengthWarning.SetActive(true);
+            usernameValid = false;
         }
-        else if (!IsUsernameValid(signUpUsernameField.text))
+        if (!IsUsernameValid(signUpUsernameField.text))
         {
             usernameLengthWarning.SetActive(true);
-        }
-        else
-        {
-            usernameValid = true;
-            Debug.Log("Username OK!");
+            usernameValid = false;
         }
 
         if (signUpPasswordField.text.Length < 8 || signUpPasswordField.text.Length > 30)
         {
             passwordLengthWarning.SetActive(true);
+            passwordValid = false;
         }
-        else if (!IsPasswordValid(signUpPasswordField.text))
+        if (!IsPasswordValid(signUpPasswordField.text))
         {
             passwordSymbolWarning.SetActive(true);
+            passwordValid = false;
         }
-        else
-        {
-            passwordValid = true;
-            Debug.Log("Password OK!");
-        }
+
+        if (passwordValid) Debug.Log("Password OK!");
+        if (usernameValid) Debug.Log("Username OK!");
 
         return usernameValid && passwordValid;
     }
@@ -267,19 +264,5 @@ public class Testing : MonoBehaviour
     {
         public UInt64 timestamp;
         public string formattedDate;
-    }
-
-    public class Duration
-    {
-        public int days;
-        public int hours;
-        public int minutes;
-
-        public Duration(int _days, int _hours, int _minutes)
-        {
-            days = _days;
-            hours = _hours;
-            minutes = _minutes;
-        }
     }
 }
