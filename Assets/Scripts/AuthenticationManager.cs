@@ -1,21 +1,13 @@
-using UnityEngine;
-using System.Collections.Generic;
-using Unity.Services.Authentication;
-using Unity.Services.CloudSave;
-using Unity.Services.Core;
-using System;
 using TMPro;
-using Unity.Services.CloudCode;
-using System.Threading.Tasks;
-using UnityEngine.Networking;
+using Unity.Services.Authentication;
+using Unity.Services.Core;
 using Unity.VisualScripting;
+using UnityEngine;
 
-public class Testing : MonoBehaviour
+public class AuthenticationManager : MonoSingleton<AuthenticationManager>
 {
-    private const int maxInitializeTries = 5;
-    private const float timeUntilRetry = 5f;
-    private bool initialized = false;
-
+    public BuildingData buildingData;
+    
     [Header("Login elements")]
     [SerializeField] private GameObject loginScreen;
     [SerializeField] private GameObject registerScreen;
@@ -26,7 +18,6 @@ public class Testing : MonoBehaviour
     [SerializeField] private GameObject saveTestButton;
     [SerializeField] private GameObject saveTimeTestButton;
     [SerializeField] private GameObject serverTimeButton;
-    [SerializeField] private TextMeshProUGUI serverTimeText;
     [SerializeField] private GameObject usernameLengthWarning;
     [SerializeField] private GameObject usernameSymbolWarning;
     [SerializeField] private GameObject passwordLengthWarning;
@@ -36,43 +27,29 @@ public class Testing : MonoBehaviour
     [SerializeField] private GameObject miscLogWarningObj;
     [SerializeField] private TextMeshProUGUI miscLogWarningText;
     [SerializeField] private GameObject registerSuccessfulPopup;
+    private const int minUsernameLength = 3;
+    private const int maxUsernameLength = 20;
+    private const int minPasswordLength = 8;
+    private const int maxPasswordLength = 30;
 
-    private void Awake()
+    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    void Start()
     {
-        StartCore();
-    }
+        loginScreen.SetActive(false);
+        registerScreen.SetActive(false);
 
-    private void Start()
+        if (NetworkManager.Instance.IsInitialized) loginScreen.SetActive(true);
+        else NetworkManager.OnInitialized += ActivateLoginScreen;
+    }
+    
+    private void ActivateLoginScreen()
     {
         loginScreen.SetActive(true);
-        registerScreen.SetActive(false);
-    }
-
-    public async void StartCore()
-    {
-        int triesCount = 0;
-        while (!initialized && triesCount < maxInitializeTries)
-        {
-            try
-            {
-                await UnityServices.InitializeAsync();
-                initialized = true;
-            }
-            catch (Exception e)
-            {
-                Debug.Log($"Failed to initialize Core, retrying in {timeUntilRetry} seconds.\n{e}");
-                triesCount++;
-                await Task.Delay(TimeSpan.FromSeconds(timeUntilRetry));
-            }
-        }
-
-        if (AuthenticationService.Instance.IsSignedIn)
-        AuthenticationService.Instance.SignOut();
     }
 
     public async void UserSignUp()
     {
-        if (!initialized) return;
+        if (!NetworkManager.Instance.IsInitialized) return;
         if (!SignUpFieldsValid()) return;
 
         try
@@ -96,7 +73,7 @@ public class Testing : MonoBehaviour
 
     public async void UserSignIn()
     {
-        if (!initialized) return;
+        if (!NetworkManager.Instance.IsInitialized) return;
 
         try
         {
@@ -116,78 +93,15 @@ public class Testing : MonoBehaviour
             Debug.LogException(rfe);
         }
     }
-
-    public async void SaveHelloWorld()
-    {
-        if (!AuthenticationService.Instance.IsSignedIn) return;
-
-        var data = new Dictionary<string, object> { { "MySaveKey", "Hello World" } };
-        await CloudSaveService.Instance.Data.Player.SaveAsync(data);
-    }
-
-    public async void SaveTimes()
-    {
-        if (!AuthenticationService.Instance.IsSignedIn) return;
-        CloudCodeTimeResponse response = null;
-
-        try
-        {
-            response = await CloudCodeService.Instance.CallEndpointAsync<CloudCodeTimeResponse>("TimeTest");
-        }
-        catch (Exception e)
-        {
-            Debug.Log($"Time check failed:\n{e}");
-        }
-
-        if (response == null) return;
-
-        TimeSpan timeSpan = new(0, 7, 30, 0);
-        DateTime dt = DateTime.Parse(response.formattedDate);
-
-        var startTime = new Dictionary<string, object> { { "StartTimeKey", dt } };
-        var endTime = new Dictionary<string, object> { { "EndTimeKey", dt + timeSpan } };
-
-        try
-        {
-            await CloudSaveService.Instance.Data.Player.SaveAsync(startTime);
-            await CloudSaveService.Instance.Data.Player.SaveAsync(endTime);
-            Debug.Log($"Time save successful");
-        }
-        catch (Exception e)
-        {
-            Debug.Log($"Time save failed:\n{e}");
-        }
-    }
-
-    public async void CheckServerTime()
-    {
-        if (!AuthenticationService.Instance.IsSignedIn) return;
-        CloudCodeTimeResponse response = null;
-
-        try
-        {
-            response = await CloudCodeService.Instance.CallEndpointAsync<CloudCodeTimeResponse>("TimeTest");
-        }
-        catch (Exception e)
-        {
-            Debug.Log($"Time check failed:\n{e}");
-        }
-
-        if (response != null)
-        {
-            TimeSpan timeSpan = new(0, 7, 30, 0);
-            DateTime dt = DateTime.Parse(response.formattedDate);
-            serverTimeText.text = string.Concat("Current Server time is:\n", dt,
-            "\n", "Completed at: ", dt + timeSpan);
-        }
-    }
+    
+    #region Login and Signup Validation
 
     private bool SignUpFieldsValid()
     {
         bool usernameValid = true;
         bool passwordValid = true;
 
-        if (signUpUsernameField.text.Length < 3 || signUpUsernameField.text.Length > 20)
+        if (signUpUsernameField.text.Length < minUsernameLength || signUpUsernameField.text.Length > maxUsernameLength)
         {
             usernameLengthWarning.SetActive(true);
             usernameValid = false;
@@ -198,7 +112,7 @@ public class Testing : MonoBehaviour
             usernameValid = false;
         }
 
-        if (signUpPasswordField.text.Length < 8 || signUpPasswordField.text.Length > 30)
+        if (signUpPasswordField.text.Length < minPasswordLength || signUpPasswordField.text.Length > maxPasswordLength)
         {
             passwordLengthWarning.SetActive(true);
             passwordValid = false;
@@ -260,9 +174,5 @@ public class Testing : MonoBehaviour
         return isValid;
     }
 
-    public class CloudCodeTimeResponse
-    {
-        public UInt64 timestamp;
-        public string formattedDate;
-    }
+    #endregion
 }
