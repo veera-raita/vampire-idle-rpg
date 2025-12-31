@@ -1,0 +1,13 @@
+C:\school\unity\vampire-idle-rpg\QuestSystem\Project\bin\Release\net6.0\any\QuestSystem.deps.json
+C:\school\unity\vampire-idle-rpg\QuestSystem\Project\bin\Release\net6.0\any\QuestSystem.dll
+C:\school\unity\vampire-idle-rpg\QuestSystem\Project\bin\Release\net6.0\any\QuestSystem.pdb
+C:\school\unity\vampire-idle-rpg\QuestSystem\Project\obj\Release\net6.0\any\QuestSystem.csproj.AssemblyReference.cache
+C:\school\unity\vampire-idle-rpg\QuestSystem\Project\obj\Release\net6.0\any\QuestSystem.GeneratedMSBuildEditorConfig.editorconfig
+C:\school\unity\vampire-idle-rpg\QuestSystem\Project\obj\Release\net6.0\any\QuestSystem.AssemblyInfoInputs.cache
+C:\school\unity\vampire-idle-rpg\QuestSystem\Project\obj\Release\net6.0\any\QuestSystem.AssemblyInfo.cs
+C:\school\unity\vampire-idle-rpg\QuestSystem\Project\obj\Release\net6.0\any\QuestSystem.csproj.CoreCompileInputs.cache
+C:\school\unity\vampire-idle-rpg\QuestSystem\Project\obj\Release\net6.0\any\QuestSystem.sourcelink.json
+C:\school\unity\vampire-idle-rpg\QuestSystem\Project\obj\Release\net6.0\any\QuestSystem.dll
+C:\school\unity\vampire-idle-rpg\QuestSystem\Project\obj\Release\net6.0\any\refint\QuestSystem.dll
+C:\school\unity\vampire-idle-rpg\QuestSystem\Project\obj\Release\net6.0\any\QuestSystem.pdb
+C:\school\unity\vampire-idle-rpg\QuestSystem\Project\obj\Release\net6.0\any\ref\QuestSystem.dll

@@ -1,0 +1,13 @@
+C:\Users\raita\AppData\Local\Temp\CloudSaveModule\module-compilation\CloudSaveModule.dll
+C:\Users\raita\AppData\Local\Temp\CloudSaveModule\module-compilation\CloudSaveModule.deps.json
+C:\Users\raita\AppData\Local\Temp\CloudSaveModule\module-compilation\CloudSaveModule.pdb
+C:\Users\raita\AppData\Local\Temp\CloudSaveModule\module-compilation\Unity.Services.CloudCode.Apis.dll
+C:\Users\raita\AppData\Local\Temp\CloudSaveModule\module-compilation\Unity.Services.CloudCode.Core.dll
+C:\Users\raita\AppData\Local\Temp\CloudSaveModule\module-compilation\Google.Protobuf.dll
+C:\Users\raita\AppData\Local\Temp\CloudSaveModule\module-compilation\Grpc.Core.Api.dll
+C:\Users\raita\AppData\Local\Temp\CloudSaveModule\module-compilation\Grpc.Net.Client.dll
+C:\Users\raita\AppData\Local\Temp\CloudSaveModule\module-compilation\Grpc.Net.Common.dll
+C:\Users\raita\AppData\Local\Temp\CloudSaveModule\module-compilation\JsonSubTypes.dll
+C:\Users\raita\AppData\Local\Temp\CloudSaveModule\module-compilation\Microsoft.Extensions.DependencyInjection.Abstractions.dll
+C:\Users\raita\AppData\Local\Temp\CloudSaveModule\module-compilation\Microsoft.Extensions.Logging.Abstractions.dll
+C:\Users\raita\AppData\Local\Temp\CloudSaveModule\module-compilation\Newtonsoft.Json.dll

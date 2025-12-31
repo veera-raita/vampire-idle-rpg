@@ -6,22 +6,30 @@ public class BuildingData
 {
     public int UpgradeLevel;
     public int MaxUpgradeLevel;
+    [field: SerializeField] public string BuildingLevelKey { get; private set; }
+    [field: SerializeField] public string BuildingDurationKey { get; private set; }
     public Duration[] upgradeDurations;
+    public BuildCost[] upgradeCosts;
     public Sprite[] upgradeSprites;
 
-    public bool IsDataValid()
+    public bool IsDataValid
     {
-        return upgradeDurations.Length == MaxUpgradeLevel - 1 && upgradeSprites.Length == MaxUpgradeLevel - 1;
+        get => upgradeDurations.Length == MaxUpgradeLevel - 1 && upgradeSprites.Length == MaxUpgradeLevel - 1;
     }
 
-    public bool IsMaxUpgraded()
+    public bool IsMaxUpgraded
     {
-        return UpgradeLevel >= MaxUpgradeLevel;
+        get => UpgradeLevel >= MaxUpgradeLevel;
     }
 
-    public bool CanBeUpgraded()
+    public Duration GetUpgradeDuration()
     {
-        return UpgradeLevel < MaxUpgradeLevel;
+        return upgradeDurations[UpgradeLevel];
+    }
+
+    public BuildCost GetUpgradeCost()
+    {
+        return upgradeCosts[UpgradeLevel];
     }
 
     public Sprite GetCurrentSprite()

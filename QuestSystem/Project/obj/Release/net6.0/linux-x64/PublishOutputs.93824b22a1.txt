@@ -1,0 +1,13 @@
+C:\Users\raita\AppData\Local\Temp\QuestSystem\module-compilation\QuestSystem.dll
+C:\Users\raita\AppData\Local\Temp\QuestSystem\module-compilation\QuestSystem.deps.json
+C:\Users\raita\AppData\Local\Temp\QuestSystem\module-compilation\QuestSystem.pdb
+C:\Users\raita\AppData\Local\Temp\QuestSystem\module-compilation\Unity.Services.CloudCode.Apis.dll
+C:\Users\raita\AppData\Local\Temp\QuestSystem\module-compilation\Unity.Services.CloudCode.Core.dll
+C:\Users\raita\AppData\Local\Temp\QuestSystem\module-compilation\Google.Protobuf.dll
+C:\Users\raita\AppData\Local\Temp\QuestSystem\module-compilation\Grpc.Core.Api.dll
+C:\Users\raita\AppData\Local\Temp\QuestSystem\module-compilation\Grpc.Net.Client.dll
+C:\Users\raita\AppData\Local\Temp\QuestSystem\module-compilation\Grpc.Net.Common.dll
+C:\Users\raita\AppData\Local\Temp\QuestSystem\module-compilation\JsonSubTypes.dll
+C:\Users\raita\AppData\Local\Temp\QuestSystem\module-compilation\Microsoft.Extensions.DependencyInjection.Abstractions.dll
+C:\Users\raita\AppData\Local\Temp\QuestSystem\module-compilation\Microsoft.Extensions.Logging.Abstractions.dll
+C:\Users\raita\AppData\Local\Temp\QuestSystem\module-compilation\Newtonsoft.Json.dll

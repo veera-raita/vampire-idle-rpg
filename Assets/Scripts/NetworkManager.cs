@@ -19,26 +19,64 @@ public class NetworkManager : MonoSingleton<NetworkManager>
     private WaitForSeconds initializeStateWait;
 
     public static event Action OnInitialized;
+    public static event Action OnAllLoadsCompleted;
 
-    private void Awake()
+    //Initial load related variables
+    private bool buildingDataLoaded = false;
+    private bool characterDataLoaded = false;
+    private bool playerDataLoaded = false;
+    private int _finishedLoads;
+    private int FinishedLoads
     {
-        StartCore();
+        get => _finishedLoads;
+        set
+        {
+            _finishedLoads = Math.Clamp(value, 0, totalLoads);
+            if (_finishedLoads == totalLoads) OnAllLoadsCompleted?.Invoke();
+        }
+    }
+    private readonly int totalLoads = 3;
+
+    private async void Awake()
+    {
         startPanel.SetActive(true);
+        await StartCore();
     }
 
     private void Start()
     {
         initializeStateWait = new(initializeStateCheckDelay);
+
+        BuildingManager.OnInitialLoadCompleted += () =>
+        {
+            if (!buildingDataLoaded)
+            {
+                buildingDataLoaded = true;
+                FinishedLoads++;
+            }
+        };
+
+        PlayerDataManager.OnInitialLoadCompleted += () =>
+        {
+            if (!playerDataLoaded)
+            {
+                playerDataLoaded = true;
+                FinishedLoads++;
+            }
+        };
     }
 
-    public async void StartCore()
+    private async Awaitable StartCore()
     {
         int triesCount = 0;
+        double startTime = new DateTimeOffset(DateTime.Now).ToUnixTimeMilliseconds();
+
         while (!IsInitialized && triesCount < maxInitializeTries)
         {
             try
             {
                 await UnityServices.InitializeAsync();
+                Debug.Log($"Initialization took {(int)(new DateTimeOffset(DateTime.Now).ToUnixTimeMilliseconds() - startTime)}ms");
                 IsInitialized = true;
                 Debug.Log("Successfully initialized UnityServices Core.");
                 OnInitialized?.Invoke();
@@ -51,21 +89,21 @@ public class NetworkManager : MonoSingleton<NetworkManager>
             }
         }
 
-        if (triesCount >= maxInitializeTries)
-        {
-            networkNotRespondingPanel.SetActive(true);
-        }
-        else
+        if (IsInitialized)
         {
             if (waitPanel.activeSelf) waitPanel.SetActive(false);
             if (startPanel.activeSelf) startPanel.SetActive(false);
-        }
         
-        if (AuthenticationService.Instance.IsSignedIn)
-            AuthenticationService.Instance.SignOut();
+            if (AuthenticationService.Instance.IsSignedIn)
+                AuthenticationService.Instance.SignOut();
+        }
+        else if (triesCount >= maxInitializeTries)
+        {
+            networkNotRespondingPanel.SetActive(true);
+        }
     }
 
-    public void ReinitializeCore()
+    public async void ReinitializeCore()
     {
         var servicesState = UnityServices.State;
 
@@ -81,7 +119,7 @@ public class NetworkManager : MonoSingleton<NetworkManager>
             case ServicesInitializationState.Uninitialized:
                 IsInitialized = false;
                 waitPanel.SetActive(true);
-                StartCore();
+                await StartCore();
                 break;
         }
     }
@@ -109,5 +147,10 @@ public class NetworkManager : MonoSingleton<NetworkManager>
         {
             networkNotRespondingPanel.SetActive(true);
         }
+    }
+
+    public static void LogTakenTime(double startTime, string taskName)
+    {
+        Debug.Log($"{taskName} took {(int)((Time.unscaledTimeAsDouble - startTime) * 1000)}ms");
     }
 }

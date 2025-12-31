@@ -54,7 +54,9 @@ public class AuthenticationManager : MonoSingleton<AuthenticationManager>
 
         try
         {
+            double startTime = Time.unscaledTimeAsDouble;
             await AuthenticationService.Instance.SignUpWithUsernamePasswordAsync(signUpUsernameField.text, signUpPasswordField.text);
+            NetworkManager.LogTakenTime(startTime, "Signup");
             registerSuccessfulPopup.SetActive(true);
             Debug.Log("Signed up succesfully.");
         }
@@ -77,20 +79,18 @@ public class AuthenticationManager : MonoSingleton<AuthenticationManager>
 
         try
         {
+            double startTime = Time.unscaledTimeAsDouble;
             await AuthenticationService.Instance.SignInWithUsernamePasswordAsync(loginUsernameField.text, loginPasswordField.text);
+            NetworkManager.LogTakenTime(startTime, "Login");
             loginScreen.SetActive(false);
             Debug.Log("Signed in succesfully.");
-        }
-        catch (AuthenticationException ae)
-        {
-            Debug.LogException(ae);
-            miscLogWarningObj.SetActive(true);
-            miscLogWarningText.text = ae.Message;
-            miscLogWarningText.text = string.Concat(miscLogWarningText.text.FirstCharacterToUpper(), ".");
         }
         catch (RequestFailedException rfe)
         {
             Debug.LogException(rfe);
+            miscLogWarningObj.SetActive(true);
+            miscLogWarningText.text = rfe.Message;
+            miscLogWarningText.text = string.Concat(miscLogWarningText.text.FirstCharacterToUpper(), ".");
         }
     }
     

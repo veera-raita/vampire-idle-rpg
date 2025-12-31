@@ -3,20 +3,35 @@ using System.Collections.Generic;
 using TMPro;
 using Unity.Services.Authentication;
 using Unity.Services.CloudCode;
+using Unity.Services.CloudCode.GeneratedBindings;
 using Unity.Services.CloudSave;
 using UnityEngine;
 
 public class CloudSaveManager : MonoSingleton<CloudSaveManager>
 {
-    
+    public CloudSaveSdkBindings CloudSaveModuleBindings { get; private set; }
+
     [SerializeField] private TextMeshProUGUI serverTimeText;
+
+    public static event Action OnBindingsCreated;
+
+    private void Start()
+    {
+        AuthenticationService.Instance.SignedIn += () =>
+        {
+            CloudSaveModuleBindings = new(CloudCodeService.Instance);
+            OnBindingsCreated?.Invoke();
+        };
+    }
 
     public async void SaveHelloWorld()
     {
         if (!AuthenticationService.Instance.IsSignedIn) return;
 
         var data = new Dictionary<string, object> { { "MySaveKey", "Hello World" } };
+        double startTime = Time.unscaledTimeAsDouble;
         await CloudSaveService.Instance.Data.Player.SaveAsync(data);
+        NetworkManager.LogTakenTime(startTime, "Signup");
     }
 
     public async void SaveTimes()
@@ -26,7 +41,9 @@ public class CloudSaveManager : MonoSingleton<CloudSaveManager>
 
         try
         {
+            double getTimeStartTime = Time.unscaledTimeAsDouble;
             response = await CloudCodeService.Instance.CallEndpointAsync<CloudCodeTimeResponse>("TimeTest");
+            NetworkManager.LogTakenTime(getTimeStartTime, "Fetching server time");
         }
         catch (Exception e)
         {
@@ -38,13 +55,15 @@ public class CloudSaveManager : MonoSingleton<CloudSaveManager>
         TimeSpan timeSpan = new(0, 7, 30, 0);
         DateTime dt = DateTime.Parse(response.formattedDate);
 
-        var startTime = new Dictionary<string, object> { { "StartTimeKey", dt } };
-        var endTime = new Dictionary<string, object> { { "EndTimeKey", dt + timeSpan } };
+        var times = new Dictionary<string, object> {
+            { "StartTimeKey", dt },
+            { "EndTimeKey", dt + timeSpan }  };
 
         try
         {
-            await CloudSaveService.Instance.Data.Player.SaveAsync(startTime);
-            await CloudSaveService.Instance.Data.Player.SaveAsync(endTime);
+            double timeSaveStartTime = Time.unscaledTimeAsDouble;
+            await CloudSaveService.Instance.Data.Player.SaveAsync(times);
+            NetworkManager.LogTakenTime(timeSaveStartTime, "Saving times");
             Debug.Log($"Time save successful");
         }
         catch (Exception e)
@@ -60,7 +79,9 @@ public class CloudSaveManager : MonoSingleton<CloudSaveManager>
 
         try
         {
+            double getTimeStartTime = Time.unscaledTimeAsDouble;
             response = await CloudCodeService.Instance.CallEndpointAsync<CloudCodeTimeResponse>("TimeTest");
+            NetworkManager.LogTakenTime(getTimeStartTime, "Fetching server time");
         }
         catch (Exception e)
         {

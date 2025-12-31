@@ -1,0 +1,13 @@
+C:\school\unity\vampire-idle-rpg\CloudSaveModule\Project\bin\Release\net6.0\any\CloudSaveModule.deps.json
+C:\school\unity\vampire-idle-rpg\CloudSaveModule\Project\bin\Release\net6.0\any\CloudSaveModule.dll
+C:\school\unity\vampire-idle-rpg\CloudSaveModule\Project\bin\Release\net6.0\any\CloudSaveModule.pdb
+C:\school\unity\vampire-idle-rpg\CloudSaveModule\Project\obj\Release\net6.0\any\CloudSaveModule.csproj.AssemblyReference.cache
+C:\school\unity\vampire-idle-rpg\CloudSaveModule\Project\obj\Release\net6.0\any\CloudSaveModule.GeneratedMSBuildEditorConfig.editorconfig
+C:\school\unity\vampire-idle-rpg\CloudSaveModule\Project\obj\Release\net6.0\any\CloudSaveModule.AssemblyInfoInputs.cache
+C:\school\unity\vampire-idle-rpg\CloudSaveModule\Project\obj\Release\net6.0\any\CloudSaveModule.AssemblyInfo.cs
+C:\school\unity\vampire-idle-rpg\CloudSaveModule\Project\obj\Release\net6.0\any\CloudSaveModule.csproj.CoreCompileInputs.cache
+C:\school\unity\vampire-idle-rpg\CloudSaveModule\Project\obj\Release\net6.0\any\CloudSaveModule.sourcelink.json
+C:\school\unity\vampire-idle-rpg\CloudSaveModule\Project\obj\Release\net6.0\any\CloudSaveModule.dll
+C:\school\unity\vampire-idle-rpg\CloudSaveModule\Project\obj\Release\net6.0\any\refint\CloudSaveModule.dll
+C:\school\unity\vampire-idle-rpg\CloudSaveModule\Project\obj\Release\net6.0\any\CloudSaveModule.pdb
+C:\school\unity\vampire-idle-rpg\CloudSaveModule\Project\obj\Release\net6.0\any\ref\CloudSaveModule.dll
