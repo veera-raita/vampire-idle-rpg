@@ -21,6 +21,7 @@ public class QuestManager : MonoSingleton<QuestManager>
 
     private event Action OnQuestTimerDone;
     public static event Action OnQuestComplete;
+    private bool HasActiveQuest = false;
 
     private void Start()
     {
@@ -35,7 +36,7 @@ public class QuestManager : MonoSingleton<QuestManager>
         if (secondsTimer >= 1f)
         {
             secondsTimer -= 1f;
-            if (questTimeLeft != null && questTimeLeft > TimeSpan.Zero)
+            if (questTimeLeft != null && questTimeLeft > TimeSpan.Zero && HasActiveQuest)
             {
                 questTimeLeft = questTimeLeft.Add(new(0, 0, -1));
                 string timeAsString = questTimeLeft.ToString("g");
@@ -43,7 +44,7 @@ public class QuestManager : MonoSingleton<QuestManager>
                 if (dotIndex != -1) questTimerText.text = timeAsString[..dotIndex];
                 else questTimerText.text = timeAsString;
             }
-            else if (questTimeLeft != null)
+            else if (questTimeLeft != null && HasActiveQuest)
             {
                 OnQuestTimerDone?.Invoke();
             }
@@ -54,6 +55,7 @@ public class QuestManager : MonoSingleton<QuestManager>
     {
         if (!IsSignedIn) return;
         string result = await questControllerBindings.AssignQuest();
+        HasActiveQuest = true;
         Debug.Log(result);
     }
 
@@ -82,6 +84,7 @@ public class QuestManager : MonoSingleton<QuestManager>
             questCompleteRewards.text = response[(rewardIndex + 1)..];
             questCompletePopup.SetActive(true);
             OnQuestComplete?.Invoke();
+            HasActiveQuest = false;
         }
         else questStatusText.text = response;
     }
